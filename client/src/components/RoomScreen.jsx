@@ -27,10 +27,10 @@ export default function RoomScreen({ room, name }) {
     if (!game || !game.started) {
         return (
             <div className="h-screen flex flex-col justify-between">
-                <h2 className="text-xl">Room: {room}</h2>
+                <h2 className="text-xl mt-8">Room: {room}</h2>
 
                 <div>
-                    <h3>Players:</h3>
+                    <h3 className="mb-4">Players:</h3>
                     <PlayerList players={players} currentTurn={-1} />
                     <button onClick={startGame} disabled={players.length < 1}>
                         Start Game
@@ -48,7 +48,7 @@ export default function RoomScreen({ room, name }) {
 
     return (
         <div className="h-screen flex flex-col justify-between">
-            <h2 className="text-xl">Room: {room}</h2>
+            <h2 className="text-xl mt-8">Room: {room}</h2>
 
             <div>
             <h3 className="mb-4">Players:</h3>
