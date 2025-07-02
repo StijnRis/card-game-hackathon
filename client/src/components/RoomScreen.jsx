@@ -8,7 +8,7 @@ export default function RoomScreen({ room, name }) {
 
     useEffect(() => {
         const socket = new WebSocket(
-            `ws://127.0.0.1:8000/ws/${room}/${name}`
+            `ws://localhost:8000/ws/${room}/${name}`
         );
         socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
