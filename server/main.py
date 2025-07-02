@@ -57,8 +57,7 @@ class ConnectionManager:
         state["hands"] = {p: [state["deck"].pop() for _ in range(5)] for p in players}
         state["discard"] = [state["deck"].pop()]
         top = state["discard"][-1]
-        state["current_suit"] = top.split("_of_")[1]
-        state["current_rank"] = top.split("_of_")[0]
+        state["current_card"] = make_card(top)
         state["started"] = True
         state["turn"] = 0
         await self.broadcast(room_id, {"type": "game_state", **state})
@@ -76,8 +75,7 @@ class ConnectionManager:
         # Remove card from hand and add to discard
         state["hands"][player].remove(card)
         state["discard"].append(card)
-        state["current_suit"] = card_obj.suit
-        state["current_rank"] = card_obj.rank
+        state["current_card"] = card_obj
         # Apply card effect
         card_obj.apply_effect(state)
         # Advance turn
