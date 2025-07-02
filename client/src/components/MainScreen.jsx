@@ -5,13 +5,22 @@ export default function MainScreen({ onJoin }) {
     const [name, setName] = useState("");
 
     const handleCreate = async () => {
-        const res = await fetch("http://192.168.11.30:8000/create_room");
+        if(!name) {alert("Please enter your name"); return;}
+        const res = await fetch("http://localhost:8000/create_room");
         const data = await res.json();
         onJoin(data.room_id, name);
     };
 
     const handleJoin = () => {
-        if (room && name) onJoin(room, name);
+        if (room && name) {onJoin(room, name)}
+        else {
+            if(!name) {
+                alert("Please enter your name");
+            }
+            if(!room) {
+                alert("Please enter a room code");
+            }
+        }
     };
 
     return (
@@ -24,7 +33,7 @@ export default function MainScreen({ onJoin }) {
                 onChange={(e) => setName(e.target.value)}
             />
             <div style={{ margin: 10 }}>
-                <button onClick={handleCreate} disabled={!name}>
+                <button onClick={handleCreate}>
                     Create Room
                 </button>
                
@@ -36,7 +45,7 @@ export default function MainScreen({ onJoin }) {
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
             />
-            <button onClick={handleJoin} disabled={!room || !name}>
+            <button onClick={handleJoin}>
                 Join Room
             </button>
         </div>
