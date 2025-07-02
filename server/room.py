@@ -24,8 +24,7 @@ class Room:
             "discard": [],
             "hands": {},
             "turn": 0,
-            "current_suit": None,
-            "current_rank": None,
+            "current_card": None,  # store as Card instance
             "skip": 0,
             "draw_stack": 0,
         }
