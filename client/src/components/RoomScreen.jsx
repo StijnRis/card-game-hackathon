@@ -26,13 +26,18 @@ export default function RoomScreen({ room, name }) {
 
     if (!game || !game.started) {
         return (
-            <div style={{ textAlign: "center", marginTop: 50 }}>
-                <h2>Room: {room}</h2>
-                <h3>Players:</h3>
-                <PlayerList players={players} currentTurn={-1} />
-                <button onClick={startGame} disabled={players.length < 2}>
-                    Start Game
-                </button>
+            <div className="h-screen flex flex-col justify-between">
+                <h2 className="text-xl">Room: {room}</h2>
+
+                <div>
+                    <h3>Players:</h3>
+                    <PlayerList players={players} currentTurn={-1} />
+                    <button onClick={startGame} disabled={players.length < 2}>
+                        Start Game
+                    </button>
+                </div>
+
+                <div></div>
             </div>
         );
     }
@@ -42,15 +47,17 @@ export default function RoomScreen({ room, name }) {
     const isMyTurn = game.players[game.turn] === name;
 
     return (
-        <div style={{ textAlign: "center", marginTop: 50 }}>
-            <h2>Room: {room}</h2>
-            <h3>Players:</h3>
-            <PlayerList players={game.players} currentTurn={game.turn} />
+        <div className="h-screen flex flex-col justify-between">
+            <h2 className="text-xl">Room: {room}</h2>
+
             <div>
+            <h3 className="mb-4">Players:</h3>
+            <PlayerList players={game.players} currentTurn={game.turn} />
+            <div className="mb-8">
                 Top card: <b>{topCard}</b>
             </div>
-            <div>Your hand:</div>
-            <div>
+            <div className="mb-4">Your hand:</div>
+            <div className="mb-8">
                 {hand.map((card) => (
                     <button
                         key={card}
@@ -66,6 +73,7 @@ export default function RoomScreen({ room, name }) {
                 <button onClick={drawCard} disabled={!isMyTurn}>
                     Draw Card
                 </button>
+            </div>
             </div>
             <div>
                 {isMyTurn
