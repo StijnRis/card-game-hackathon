@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import MainScreen from "./MainScreen";
-import RoomScreen from "./RoomScreen";
+import MainScreen from "./components/MainScreen";
+import RoomScreen from "./components/RoomScreen";
 
 export default function App() {
     const [joined, setJoined] = useState(false);
