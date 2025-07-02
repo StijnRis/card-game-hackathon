@@ -32,7 +32,7 @@ export default function RoomScreen({ room, name }) {
                 <div>
                     <h3>Players:</h3>
                     <PlayerList players={players} currentTurn={-1} />
-                    <button onClick={startGame} disabled={players.length < 2}>
+                    <button onClick={startGame} disabled={players.length < 1}>
                         Start Game
                     </button>
                 </div>
