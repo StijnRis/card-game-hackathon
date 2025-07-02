@@ -6,7 +6,7 @@ function MainScreen({ onJoin }) {
     const [name, setName] = useState("");
 
     const handleCreate = async () => {
-        const res = await fetch("http://127.0.0.1:8000/create_room");
+        const res = await fetch("http://192.168.11.30:8000/create_room");
         const data = await res.json();
         onJoin(data.room_id, name);
     };
@@ -46,7 +46,7 @@ function RoomScreen({ room, name }) {
     const [game, setGame] = useState(null);
 
     useEffect(() => {
-        const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${room}/${name}`);
+        const socket = new WebSocket(`ws://192.168.11.30:8000/ws/${room}/${name}`);
         socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
             if (msg.type === "players") setPlayers(msg.players);

@@ -38,8 +38,14 @@ class ConnectionManager:
         self.players[room_id].remove(player_name)
 
     async def broadcast(self, room_id: str, message: dict):
+        to_remove = []
         for connection in self.active_connections[room_id]:
-            await connection.send_json(message)
+            try:
+                await connection.send_json(message)
+            except Exception:
+                to_remove.append(connection)
+        for connection in to_remove:
+            self.active_connections[room_id].remove(connection)
 
     def init_game_state(self):
         # Initialize a Mau Mau deck (simplified: 4 suits, 7-10, J, Q, K, A)
