@@ -8,7 +8,7 @@ export default function RoomScreen({ room, name }) {
 
     useEffect(() => {
         const socket = new WebSocket(
-            `ws://192.168.11.30:8000/ws/${room}/${name}`
+            `ws://127.0.0.1:8000/ws/${room}/${name}`
         );
         socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
@@ -30,7 +30,7 @@ export default function RoomScreen({ room, name }) {
                 <h2>Room: {room}</h2>
                 <h3>Players:</h3>
                 <PlayerList players={players} currentTurn={-1} />
-                <button onClick={startGame} disabled={players.length < 2}>
+                <button onClick={startGame} disabled={players.length < 1}>
                     Start Game
                 </button>
             </div>

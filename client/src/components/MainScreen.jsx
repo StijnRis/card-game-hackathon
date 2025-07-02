@@ -5,7 +5,7 @@ export default function MainScreen({ onJoin }) {
     const [name, setName] = useState("");
 
     const handleCreate = async () => {
-        const res = await fetch("http://192.168.11.30:8000/create_room");
+        const res = await fetch("http://127.0.0.1:8000/create_room");
         const data = await res.json();
         onJoin(data.room_id, name);
     };
