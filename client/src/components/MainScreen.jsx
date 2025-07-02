@@ -16,9 +16,10 @@ export default function MainScreen({ onJoin }) {
 
     return (
         <div style={{ textAlign: "center", marginTop: 100 }}>
-            <h1>Mau Mau Online</h1>
+            <h1 className="mb-4">CardGame</h1>
             <input
-                placeholder="Your name"
+                className="input mb-8"
+                placeholder="Enter name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
@@ -26,8 +27,11 @@ export default function MainScreen({ onJoin }) {
                 <button onClick={handleCreate} disabled={!name}>
                     Create Room
                 </button>
+               
             </div>
+             <p className="mb-4">Or</p>
             <input
+                className="input mr-4"
                 placeholder="Room code"
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
