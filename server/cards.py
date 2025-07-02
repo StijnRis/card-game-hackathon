@@ -10,23 +10,29 @@ class Card:
     def apply_effect(self, state):
         pass
 
+
 class Card7(Card):
     def apply_effect(self, state):
         state["draw_stack"] += 2
+
 
 class Card8(Card):
     def apply_effect(self, state):
         state["skip"] = 1
 
+
 class CardJ(Card):
     def can_play(self, state):
         return True
+
     def apply_effect(self, state):
         pass
+
 
 class CardA(Card):
     def apply_effect(self, state):
         pass
+
 
 CARD_CLASS_MAP = {
     "7": Card7,
@@ -34,6 +40,7 @@ CARD_CLASS_MAP = {
     "J": CardJ,
     "A": CardA,
 }
+
 
 def make_card(card_str):
     rank, suit = card_str.split("_of_")
