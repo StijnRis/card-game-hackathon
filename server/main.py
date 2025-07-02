@@ -4,6 +4,8 @@ from typing import Dict, List
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
+from .cards import make_card
+
 app = FastAPI()
 
 app.add_middleware(
@@ -48,7 +50,7 @@ class ConnectionManager:
             self.active_connections[room_id].remove(connection)
 
     def init_game_state(self):
-        # Initialize a Mau Mau deck (simplified: 4 suits, 7-10, J, Q, K, A)
+        # Full Mau Mau deck: 4 suits, 7-A, J, Q, K, A (optionally 2-10)
         suits = ["hearts", "diamonds", "clubs", "spades"]
         ranks = ["7", "8", "9", "10", "J", "Q", "K", "A"]
         deck = [f"{rank}_of_{suit}" for suit in suits for rank in ranks]
@@ -64,6 +66,8 @@ class ConnectionManager:
             "turn": 0,
             "current_suit": None,
             "current_rank": None,
+            "skip": 0,  # for 8s
+            "draw_stack": 0,  # for 7s
         }
 
     async def start_game(self, room_id: str):
@@ -81,23 +85,36 @@ class ConnectionManager:
 
     async def play_card(self, room_id: str, player: str, card: str):
         state = self.game_states[room_id]
-        if not state["started"] or state["players"][state["turn"]] != player:
+        if not state["started"]:
             return
-        # Validate card
-        rank, suit = card.split("_of_")
-        if rank != state["current_rank"] and suit != state["current_suit"]:
+        if state["players"][state["turn"]] != player:
             return
+        card_obj = make_card(card)
+        if not card_obj.can_play(state):
+            return
+        # Remove card from hand and add to discard
         state["hands"][player].remove(card)
         state["discard"].append(card)
-        state["current_suit"] = suit
-        state["current_rank"] = rank
-        # Next turn
-        state["turn"] = (state["turn"] + 1) % len(state["players"])
+        state["current_suit"] = card_obj.suit
+        state["current_rank"] = card_obj.rank
+        # Apply card effect
+        card_obj.apply_effect(state)
+        # Advance turn
+        self._advance_turn(state)
         await self.broadcast(room_id, {"type": "game_state", **state})
+
+    def _advance_turn(self, state):
+        if state["skip"] > 0:
+            state["turn"] = (state["turn"] + 2) % len(state["players"])
+            state["skip"] = 0
+        else:
+            state["turn"] = (state["turn"] + 1) % len(state["players"])
 
     async def draw_card(self, room_id: str, player: str):
         state = self.game_states[room_id]
-        if not state["started"] or state["players"][state["turn"]] != player:
+        if not state["started"]:
+            return
+        if state["players"][state["turn"]] != player:
             return
         if not state["deck"]:
             # Reshuffle discard except top
@@ -106,11 +123,17 @@ class ConnectionManager:
             import random
 
             random.shuffle(state["deck"])
-        if state["deck"]:
-            card = state["deck"].pop()
-            state["hands"][player].append(card)
-        # Next turn
-        state["turn"] = (state["turn"] + 1) % len(state["players"])
+        if state["draw_stack"] > 0:
+            for _ in range(state["draw_stack"]):
+                if state["deck"]:
+                    card = state["deck"].pop()
+                    state["hands"][player].append(card)
+            state["draw_stack"] = 0
+        else:
+            if state["deck"]:
+                card = state["deck"].pop()
+                state["hands"][player].append(card)
+        self._advance_turn(state)
         await self.broadcast(room_id, {"type": "game_state", **state})
 
 
