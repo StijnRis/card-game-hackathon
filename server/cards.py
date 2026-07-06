@@ -3,9 +3,13 @@ class Card:
         self.rank = rank
         self.suit = suit
         self.name = f"{rank}_of_{suit}"
+        self.image = f"/cards/{self.name}.svg"  # Path to SVG or PNG in public/cards/
 
     def can_play(self, state):
-        return self.rank == state["current_rank"] or self.suit == state["current_suit"]
+        return (
+            self.rank == state.get("current_card", self).rank
+            or self.suit == state.get("current_card", self).suit
+        )
 
     def apply_effect(self, state):
         pass

@@ -2,9 +2,6 @@ import "./Card.css";
 
 export default function Card({ card, onClick, disabled }) {
     if (!card) return null;
-    // Accept both string ("7_of_hearts") and object with .image/.name
-    const name = card.name;
-    const image = card.image || `/cards/${name}.svg`;
     return (
         <button
             className="card-btn"
@@ -18,8 +15,8 @@ export default function Card({ card, onClick, disabled }) {
             }}
         >
             <img
-                src={image}
-                alt={name}
+                src={card.image || `/cards/${card.name}.svg`}
+                alt={card.name}
                 className="card-img"
                 style={{
                     width: 60,
@@ -29,7 +26,7 @@ export default function Card({ card, onClick, disabled }) {
                 }}
             />
             <div style={{ fontSize: 12, color: "#333" }}>
-                {name.replace(/_/g, " ")}
+                {card.name.replace(/_/g, " ")}
             </div>
         </button>
     );
